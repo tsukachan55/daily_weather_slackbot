@@ -1,0 +1,14 @@
+# Google Apps Script関連
+.clasp.json
+.clasprc.json
+
+# IDE関連
+.idea/
+.vscode/
+*.iml
+*.iws
+.idea_modules/
+
+# OS関連
+.DS_Store
+Thumbs.db 
