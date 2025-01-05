@@ -1,0 +1,2 @@
+# daily_weather_slackbot
+Google Apps Scriptで実装した天気通知Slackボット
