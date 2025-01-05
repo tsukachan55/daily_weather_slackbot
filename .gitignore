@@ -1,6 +1,6 @@
 # Google Apps Script関連
 .clasp.json
-.clasprc.json
+node_modules/
 
 # IDE関連
 .idea/

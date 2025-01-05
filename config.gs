@@ -1,43 +1,31 @@
-// 設定情報を管理するクラス
-class Config {
-  // プロパティ名の定義
-  static getPropertyKeys() {
-    return {
-      WEBHOOK_URL: 'WEBHOOK_URL',
-      POSTAL_CODE: 'POSTAL_CODE'
-    };
-  }
+// スクリプトプロパティの取得用関数
+function getConfig() {
+  const scriptProperties = PropertiesService.getScriptProperties();
+  const notificationHours = scriptProperties.getProperty('NOTIFICATION_HOURS');
+  
+  return {
+    SLACK_WEBHOOK_URL: scriptProperties.getProperty('SLACK_WEBHOOK_URL'),
+    POSTAL_CODE: scriptProperties.getProperty('POSTAL_CODE'),
+    NOTIFICATION_HOURS: notificationHours ? notificationHours.split(',').map(Number) : [7, 12, 18]
+  };
+}
 
-  // プロパティの取得
-  static getProperty(key) {
-    return PropertiesService.getScriptProperties().getProperty(key);
-  }
+// スクリプトプロパティの設定用関数
+function setConfig(config) {
+  const scriptProperties = PropertiesService.getScriptProperties();
+  scriptProperties.setProperties({
+    'SLACK_WEBHOOK_URL': config.SLACK_WEBHOOK_URL,
+    'POSTAL_CODE': config.POSTAL_CODE,
+    'NOTIFICATION_HOURS': config.NOTIFICATION_HOURS.join(',')
+  });
+}
 
-  // プロパティの設定
-  static setProperty(key, value) {
-    PropertiesService.getScriptProperties().setProperty(key, value);
-  }
-
-  // Webhook URLの取得
-  static getWebhookUrl() {
-    return this.getProperty(this.getPropertyKeys().WEBHOOK_URL);
-  }
-
-  // 郵便番号の取得
-  static getPostalCode() {
-    return this.getProperty(this.getPropertyKeys().POSTAL_CODE);
-  }
-
-  // 郵便番号の設定
-  static setPostalCode(postalCode) {
-    this.setProperty(this.getPropertyKeys().POSTAL_CODE, postalCode);
-  }
-
-  // 設定が完了しているかチェック
-  static isConfigured() {
-    return Boolean(
-      this.getWebhookUrl() &&
-      this.getPostalCode()
-    );
-  }
+// 初期設定用関数
+function initializeConfig() {
+  const defaultConfig = {
+    SLACK_WEBHOOK_URL: '', // Slack Webhook URLを設定
+    POSTAL_CODE: '1000001', // デフォルトは東京都千代田区
+    NOTIFICATION_HOURS: [7, 12, 18] // デフォルトの通知時間
+  };
+  setConfig(defaultConfig);
 } 

@@ -10,7 +10,7 @@ class ApiHandler {
   }
 
   // 郵便番号から緯度経度を取得
-  static async getGeoLocation(postalCode) {
+  static getGeoLocation(postalCode) {
     const url = `${this.GEO_API_URL}?method=searchByPostal&postal=${postalCode}`;
     try {
       const response = UrlFetchApp.fetch(url);
@@ -32,23 +32,18 @@ class ApiHandler {
   }
 
   // 天気情報を取得
-  static async getWeather(latitude, longitude) {
-    const url = `${this.WEATHER_API_URL}?latitude=${latitude}&longitude=${longitude}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FTokyo`;
+  static getWeather(latitude, longitude) {
+    const url = `${this.WEATHER_API_URL}?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation_probability,weathercode&daily=temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo`;
     
     try {
       const response = UrlFetchApp.fetch(url);
       const json = JSON.parse(response.getContentText());
       
-      if (!json.daily) {
+      if (!json.daily || !json.hourly) {
         throw new Error('天気情報が見つかりません');
       }
 
-      return {
-        weatherCode: json.daily.weathercode[0],
-        maxTemp: json.daily.temperature_2m_max[0],
-        minTemp: json.daily.temperature_2m_min[0],
-        precipitationProb: json.daily.precipitation_probability_max[0]
-      };
+      return json;
     } catch (error) {
       console.error('天気情報の取得に失敗しました:', error);
       throw error;
